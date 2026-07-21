@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TONY THRIFTS — Juja's Plug for Authentic Imported Drip</title>
+<meta name="description" content="Curated, authentic imported streetwear for JKUAT & Juja students. Grade-A hoodies, sweatpants and sneakers, delivered to your hall." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          bg: '#0A0A0B',
+          surface: '#131315',
+          surface2: '#1C1C1F',
+          edge: '#29292E',
+          ink: '#F4F4F0',
+          muted: '#8B8B92',
+          lime: '#CFFF04',
+          cyan: '#17E3D8',
+          mpesa: '#17A651',
+        },
+        fontFamily: {
+          display: ['"Bebas Neue"', 'sans-serif'],
+          mono: ['"Space Mono"', 'monospace'],
+          sans: ['Inter', 'sans-serif'],
+        },
+        letterSpacing: { widest2: '.25em' },
+      }
+    }
+  }
+</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  :root { color-scheme: dark; }
+  html, body { background:#0A0A0B; }
+  body { font-family: 'Inter', sans-serif; }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: #0A0A0B; }
+  ::-webkit-scrollbar-thumb { background: #29292E; border-radius: 999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a3a40; }
+
+  :focus-visible { outline: 2px solid #CFFF04; outline-offset: 3px; border-radius: 2px; }
+
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  .animate-marquee { animation: marquee 22s linear infinite; }
+
+  @keyframes riseIn { from { opacity:0; transform: translateY(14px); } to { opacity:1; transform: translateY(0); } }
+  .rise-in { animation: riseIn .5s ease both; }
+
+  @keyframes pinDot { 0% { transform: scale(.6); opacity:.4; } 100% { transform: scale(1); opacity:1; } }
+  .pin-fill { animation: pinDot .25s ease both; }
+
+  .hang-tag { position: relative; }
+  .hang-tag::before {
+    content: "";
+    position: absolute; left: -6px; top: 50%; transform: translateY(-50%);
+    width: 8px; height: 8px; border-radius: 999px;
+    background: #0A0A0B; border: 1.5px solid currentColor;
+  }
+
+  .barcode {
+    background-image: repeating-linear-gradient(90deg,
+      currentColor 0px, currentColor 2px, transparent 2px, transparent 4px,
+      currentColor 4px, currentColor 5px, transparent 5px, transparent 9px,
+      currentColor 9px, currentColor 11px, transparent 11px, transparent 13px,
+      currentColor 13px, currentColor 16px, transparent 16px, transparent 20px);
+  }
+
+  .ticket-tear {
+    background-image: repeating-linear-gradient(90deg, #29292E 0 10px, transparent 10px 18px);
+    height: 2px;
+  }
+  .notch { width: 22px; height: 22px; border-radius: 999px; background: #000; position: absolute; top: 50%; transform: translateY(-50%); }
+
+  .grain { background-image: radial-gradient(#ffffff08 1px, transparent 1px); background-size: 3px 3px; }
+
+  input[type="radio"].loc-radio:checked + label { border-color:#CFFF04; background:#CFFF0412; color:#F4F4F0; }
+
+  @media print {
+    body * { visibility: hidden; }
+    #ticketPrintArea, #ticketPrintArea * { visibility: visible; }
+    #ticketPrintArea { position: fixed; inset: 0; margin: auto; background: white !important; color:#000 !important; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+  }
+</style>
+</head>
+
+<body class="bg-bg text-ink antialiased selection:bg-lime selection:text-black">
+
+<!-- ============ NAVBAR ============ -->
+<header class="sticky top-0 z-40 bg-bg/85 backdrop-blur border-b border-edge">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-2 shrink-0">
+      <span class="font-display text-2xl sm:text-3xl tracking-wide leading-none">TONY<span class="text-lime">THRIFTS</span></span>
+    </a>
+
+    <nav class="hidden md:flex items-center gap-8 font-mono text-xs uppercase tracking-widest2 text-muted">
+      <a href="#catalog" data-scope="apparel" class="nav-link hover:text-lime transition-colors">Shop Apparel</a>
+      <a href="#catalog" data-scope="shoes" class="nav-link hover:text-lime transition-colors">Shoe Vault</a>
+      <a href="#about" class="nav-link hover:text-lime transition-colors">About</a>
+      <button id="orderStatusNavBtn" class="hover:text-lime transition-colors">Order Status</button>
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <button id="cartBtn" aria-label="Open cart" class="relative w-10 h-10 rounded-full border border-edge grid place-items-center hover:border-lime transition-colors">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+        <span id="cartCount" class="absolute -top-1.5 -right-1.5 min-w-[18px] h-[18px] px-1 rounded-full bg-lime text-black text-[10px] font-mono font-bold grid place-items-center">0</span>
+      </button>
+      <button id="mobileMenuBtn" class="md:hidden w-10 h-10 rounded-full border border-edge grid place-items-center" aria-label="Open menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobileMenu" class="hidden md:hidden border-t border-edge bg-bg font-mono text-xs uppercase tracking-widest2 text-muted">
+    <div class="px-5 py-3 flex flex-col gap-3">
+      <a href="#catalog" data-scope="apparel" class="nav-link py-1">Shop Apparel</a>
+      <a href="#catalog" data-scope="shoes" class="nav-link py-1">Shoe Vault</a>
+      <a href="#about" class="nav-link py-1">About</a>
+      <button id="orderStatusNavBtnMobile" class="text-left py-1">Order Status</button>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section id="top" class="relative overflow-hidden border-b border-edge">
+  <div class="absolute inset-0 grain opacity-40 pointer-events-none"></div>
+  <div class="absolute -top-24 -left-24 w-96 h-96 bg-lime/10 blur-3xl rounded-full pointer-events-none"></div>
+  <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-cyan/10 blur-3xl rounded-full pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 pt-16 pb-14 sm:pt-24 sm:pb-20 relative">
+    <p class="font-mono text-[11px] tracking-widest2 uppercase text-lime mb-5">JKUAT • Juja • Grade-A Imports</p>
+    <h1 class="font-display text-[15vw] sm:text-7xl md:text-8xl leading-[0.88] uppercase tracking-tight max-w-4xl">
+      Juja's Plug For<br class="hidden sm:block"> Authentic Imported <span class="text-lime">Drip</span>
+    </h1>
+    <p class="mt-6 max-w-xl text-muted text-base sm:text-lg leading-relaxed">
+      Hand-picked oversized hoodies, sweatpants and kicks — inspected, graded and dropped at your hall before your next class. No fakes, no filler.
+    </p>
+
+    <div class="mt-8 flex flex-wrap items-center gap-4">
+      <a href="#catalog" data-scope="all" class="nav-link px-7 py-3.5 rounded-full bg-lime text-black font-mono text-xs uppercase tracking-widest2 font-bold hover:brightness-95 transition">Shop Drops</a>
+      <a href="#catalog" data-scope="shoes" class="nav-link px-7 py-3.5 rounded-full border border-edge hover:border-cyan hover:text-cyan font-mono text-xs uppercase tracking-widest2 font-bold transition">Browse Shoes</a>
+    </div>
+
+    <div class="mt-10 flex flex-wrap gap-x-8 gap-y-4">
+      <div class="hang-tag pl-4 font-mono text-[11px] uppercase tracking-widest2 text-muted">500+ Pieces Graded</div>
+      <div class="hang-tag pl-4 font-mono text-[11px] uppercase tracking-widest2 text-muted">Same-Day Hall Delivery</div>
+      <div class="hang-tag pl-4 font-mono text-[11px] uppercase tracking-widest2 text-muted">100% Authentic Import</div>
+    </div>
+  </div>
+
+  <div class="border-t border-edge bg-surface overflow-hidden">
+    <div class="flex whitespace-nowrap py-2.5 animate-marquee">
+      <div class="flex shrink-0">
+        <span class="font-mono text-xs uppercase tracking-widest2 text-lime px-6">New Drop Every Friday</span>
+        <span class="font-mono text-xs uppercase tracking-widest2 text-muted px-6">·</span>
+        <span class="font-mono text-xs uppercase tracking-widest2 text-ink px-6">Pay with M-Pesa</span>
+        <span class="font-mono text-xs uppercase tracking-widest2 text-muted px-6">·</span>
+        <span class="font-mono text-xs uppercase tracking-widest2 text-cyan px-6">Gate A · Gate C · Hall 6 · Gachororo</span>
+        <span class="font-mono text-xs uppercase tracking-widest2 text-muted px-6">·</span>
+      </div>
+      <div class="flex shrink-0" aria-hidden="true">
+        <span class="font-mono text-xs uppercase tracking-widest2 text-lime px-6">New Drop Every Friday</span>
+        <span class="font-mono text-xs uppercase tracking-widest2 text-muted px-6">·</span>
+        <span class="font-mono text-xs uppercase tracking-widest2 text-ink px-6">Pay with M-Pesa</span>
+        <span class="font-mono text-xs uppercase tracking-widest2 text-muted px-6">·</span>
+        <span class="font-mono text-xs uppercase tracking-widest2 text-cyan px-6">Gate A · Gate C · Hall 6 · Gachororo</span>
+        <span class="font-mono text-xs uppercase tracking-widest2 text-muted px-6">·</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CATALOG ============ -->
+<section id="catalog" class="max-w-7xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
+  <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+    <div>
+      <p class="font-mono text-[11px] tracking-widest2 uppercase text-cyan mb-2">The Rack</p>
+      <h2 class="font-display text-4xl sm:text-5xl uppercase leading-none">Current Stock</h2>
+    </div>
+    <p class="text-muted text-sm max-w-sm">Every piece is hand-graded on arrival. Sizes are limited — once it's gone, it's gone.</p>
+  </div>
+
+  <div id="filterBar" class="flex flex-wrap gap-2 mb-9 font-mono text-xs uppercase tracking-widest2">
+    <button data-filter="all" class="filter-btn px-4 py-2 rounded-full border border-lime bg-lime text-black font-bold">All</button>
+    <button data-filter="Sweatshirts" class="filter-btn px-4 py-2 rounded-full border border-edge text-muted hover:border-lime hover:text-ink transition">Sweatshirts</button>
+    <button data-filter="Sweatpants" class="filter-btn px-4 py-2 rounded-full border border-edge text-muted hover:border-lime hover:text-ink transition">Sweatpants</button>
+    <button data-filter="Shoes" class="filter-btn px-4 py-2 rounded-full border border-edge text-muted hover:border-lime hover:text-ink transition">Shoes</button>
+    <button data-filter="New" class="filter-btn px-4 py-2 rounded-full border border-edge text-muted hover:border-lime hover:text-ink transition">New Arrivals</button>
+  </div>
+
+  <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section id="about" class="border-t border-edge bg-surface">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 py-16 sm:py-24 grid md:grid-cols-2 gap-12">
+    <div>
+      <p class="font-mono text-[11px] tracking-widest2 uppercase text-lime mb-2">Why Tony Thrifts</p>
+      <h2 class="font-display text-4xl sm:text-5xl uppercase leading-[0.9] mb-5">The Grade<br>System</h2>
+      <p class="text-muted leading-relaxed mb-4">Every import bale gets sorted by hand before it touches the rack. We don't sell rejects — we sell what's actually worth your fare to campus.</p>
+      <div class="space-y-4 mt-6">
+        <div class="flex gap-4 items-start">
+          <span class="hang-tag pl-4 shrink-0 font-mono text-xs font-bold text-lime uppercase tracking-widest2">Grade A</span>
+          <p class="text-sm text-muted">Barely worn, no flaws, looks fresh off the shelf.</p>
+        </div>
+        <div class="flex gap-4 items-start">
+          <span class="hang-tag pl-4 shrink-0 font-mono text-xs font-bold text-cyan uppercase tracking-widest2">Grade B</span>
+          <p class="text-sm text-muted">Loved but clean — minor wear, priced to move fast.</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="font-mono text-[11px] tracking-widest2 uppercase text-cyan mb-2">Delivery</p>
+      <h2 class="font-display text-4xl sm:text-5xl uppercase leading-[0.9] mb-5">Straight To<br>Your Hall</h2>
+      <p class="text-muted leading-relaxed mb-5">Order before 3pm and we'll have it at your gate the same evening. Pick your usual drop point at checkout.</p>
+      <div class="flex flex-wrap gap-2 font-mono text-[11px] uppercase tracking-widest2">
+        <span class="px-3 py-1.5 rounded-full border border-edge text-muted">Gate A</span>
+        <span class="px-3 py-1.5 rounded-full border border-edge text-muted">Gate C</span>
+        <span class="px-3 py-1.5 rounded-full border border-edge text-muted">High Point</span>
+        <span class="px-3 py-1.5 rounded-full border border-edge text-muted">Juja Square</span>
+        <span class="px-3 py-1.5 rounded-full border border-edge text-muted">Hall 6</span>
+        <span class="px-3 py-1.5 rounded-full border border-edge text-muted">Gachororo</span>
+        <span class="px-3 py-1.5 rounded-full border border-edge text-muted">Caltex</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t border-edge">
+  <div class="max-w-7xl mx-auto px-5 sm:px-8 py-12 flex flex-col sm:flex-row justify-between gap-8">
+    <div>
+      <span class="font-display text-2xl tracking-wide">TONY<span class="text-lime">THRIFTS</span></span>
+      <p class="text-muted text-sm mt-2 max-w-xs">Authentic imported streetwear for JKUAT and greater Juja. Graded, priced fair, delivered fast.</p>
+    </div>
+    <div class="font-mono text-xs uppercase tracking-widest2 text-muted space-y-2">
+      <p>Payments via M-Pesa</p>
+      <p>Delivery: Gate A – Gachororo – Caltex</p>
+      <p>&copy; 2026 Tony Thrifts. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ CART SLIDE-OVER ============ -->
+<div id="cartOverlay" class="hidden fixed inset-0 z-50">
+  <div class="absolute inset-0 bg-black/70" data-close="cart"></div>
+  <aside class="absolute right-0 top-0 h-full w-full max-w-md bg-surface border-l border-edge flex flex-col translate-x-full transition-transform duration-300" id="cartPanel">
+    <div class="flex items-center justify-between px-6 h-16 border-b border-edge shrink-0">
+      <h3 class="font-display text-2xl uppercase tracking-wide">Your Cart</h3>
+      <button data-close="cart" aria-label="Close cart" class="w-9 h-9 rounded-full border border-edge grid place-items-center hover:border-lime">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div id="cartItems" class="flex-1 overflow-y-auto px-6 py-4 space-y-4"></div>
+
+    <div class="border-t border-edge px-6 py-5 shrink-0">
+      <div class="flex justify-between font-mono text-sm text-muted mb-1">
+        <span>Subtotal</span><span id="cartSubtotal">KSh 0</span>
+      </div>
+      <div class="flex justify-between font-mono text-sm text-muted mb-3">
+        <span>Campus delivery</span><span id="cartDeliveryFee">KSh 50</span>
+      </div>
+      <div class="flex justify-between font-mono text-base font-bold mb-5">
+        <span>Total</span><span id="cartTotal" class="text-lime">KSh 0</span>
+      </div>
+      <button id="checkoutOpenBtn" class="w-full py-4 rounded-full bg-lime text-black font-mono text-xs uppercase tracking-widest2 font-bold hover:brightness-95 transition disabled:opacity-40 disabled:cursor-not-allowed">Checkout</button>
+    </div>
+  </aside>
+</div>
+
+<!-- ============ CHECKOUT MODAL ============ -->
+<div id="checkoutOverlay" class="hidden fixed inset-0 z-50 grid place-items-center p-4">
+  <div class="absolute inset-0 bg-black/80" data-close="checkout"></div>
+  <div class="relative bg-surface border border-edge rounded-2xl w-full max-w-lg max-h-[92vh] overflow-y-auto rise-in">
+    <div class="flex items-center justify-between px-6 h-16 border-b border-edge sticky top-0 bg-surface">
+      <h3 class="font-display text-2xl uppercase tracking-wide">Checkout</h3>
+      <button data-close="checkout" aria-label="Close checkout" class="w-9 h-9 rounded-full border border-edge grid place-items-center hover:border-lime">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <form id="checkoutForm" class="px-6 py-6 space-y-5" novalidate>
+      <div id="checkoutSummary" class="rounded-xl border border-edge bg-surface2 p-4 font-mono text-xs text-muted space-y-1"></div>
+
+      <div>
+        <label for="fullName" class="block text-xs font-mono uppercase tracking-widest2 text-muted mb-2">Full Name</label>
+        <input id="fullName" name="fullName" type="text" required placeholder="e.g. Brian Otieno"
+          class="w-full bg-bg border border-edge rounded-lg px-4 py-3 text-sm focus:border-lime outline-none placeholder:text-muted/50">
+        <p class="hidden text-xs text-red-400 mt-1 font-mono" data-error="fullName">Enter your full name.</p>
+      </div>
+
+      <div>
+        <label for="phone" class="block text-xs font-mono uppercase tracking-widest2 text-muted mb-2">M-Pesa Phone Number</label>
+        <input id="phone" name="phone" type="tel" required placeholder="07XX XXX XXX / 01XX XXX XXX" maxlength="10"
+          class="w-full bg-bg border border-edge rounded-lg px-4 py-3 text-sm font-mono focus:border-lime outline-none placeholder:text-muted/50">
+        <p class="hidden text-xs text-red-400 mt-1 font-mono" data-error="phone">Enter a valid Safaricom number (07XX... or 01XX...).</p>
+      </div>
+
+      <div>
+        <p class="block text-xs font-mono uppercase tracking-widest2 text-muted mb-2">Delivery Location — Juja</p>
+        <div id="locationOptions" class="grid grid-cols-2 gap-2"></div>
+        <p class="hidden text-xs text-red-400 mt-2 font-mono" data-error="location">Pick a delivery point.</p>
+      </div>
+
+      <button type="submit" id="payBtn" class="w-full py-4 rounded-full bg-mpesa text-white font-mono text-xs uppercase tracking-widest2 font-bold hover:brightness-110 transition flex items-center justify-center gap-2">
+        <span>Pay with M-Pesa</span>
+      </button>
+      <p class="text-center text-[11px] text-muted font-mono">This is a demo checkout — no real payment is sent.</p>
+    </form>
+  </div>
+</div>
+
+<!-- ============ STK PUSH SIMULATION MODAL ============ -->
+<div id="stkOverlay" class="hidden fixed inset-0 z-[60] grid place-items-center p-4">
+  <div class="absolute inset-0 bg-black/85"></div>
+  <div class="relative w-full max-w-[300px] rise-in">
+    <div class="rounded-[2.2rem] border-4 border-surface2 bg-black shadow-2xl overflow-hidden">
+      <div class="flex items-center justify-between px-5 pt-3 pb-1 text-[10px] font-mono text-white/70">
+        <span id="stkClock">9:41</span>
+        <span>Safaricom</span>
+      </div>
+      <div class="px-5 pb-7 pt-4 text-white">
+        <p class="text-center font-mono text-[10px] uppercase tracking-widest2 text-white/50 mb-1">M-Pesa</p>
+        <p class="text-center font-mono text-xs text-white/80 leading-relaxed mb-4">
+          STK Push Sent: Enter M-Pesa PIN to complete payment of <span id="stkAmount" class="text-lime font-bold">KSh 0</span> to <span id="stkBusiness" class="text-lime font-bold">Tony Thrifts</span>
+        </p>
+
+        <div id="stkPinStage">
+          <div class="flex justify-center gap-3 my-6" id="stkPinDots">
+            <span class="w-3.5 h-3.5 rounded-full border-2 border-white/30" data-dot></span>
+            <span class="w-3.5 h-3.5 rounded-full border-2 border-white/30" data-dot></span>
+            <span class="w-3.5 h-3.5 rounded-full border-2 border-white/30" data-dot></span>
+            <span class="w-3.5 h-3.5 rounded-full border-2 border-white/30" data-dot></span>
+          </div>
+          <button id="stkConfirmBtn" class="w-full py-3 rounded-full bg-lime text-black font-mono text-[11px] uppercase tracking-widest2 font-bold">Simulate PIN Entry &amp; Confirm</button>
+          <button id="stkCancelBtn" class="w-full py-3 mt-2 rounded-full border border-white/20 text-white/60 font-mono text-[11px] uppercase tracking-widest2">Cancel</button>
+        </div>
+
+        <div id="stkSuccessStage" class="hidden text-center py-3">
+          <div class="w-12 h-12 rounded-full bg-lime/15 border border-lime grid place-items-center mx-auto mb-3">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#CFFF04" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <p class="font-mono text-xs text-lime uppercase tracking-widest2">Payment Confirmed</p>
+          <p class="font-mono text-[10px] text-white/50 mt-1">Generating your order ticket…</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ORDER TICKET MODAL ============ -->
+<div id="ticketOverlay" class="hidden fixed inset-0 z-[70] grid place-items-center p-4">
+  <div class="absolute inset-0 bg-black/85"></div>
+  <div class="relative w-full max-w-sm rise-in">
+    <div id="ticketPrintArea" class="relative bg-surface border border-edge rounded-2xl overflow-hidden text-ink">
+      <div class="px-6 pt-6 pb-4">
+        <div class="flex items-center justify-between mb-1">
+          <span class="font-display text-xl tracking-wide">TONY<span class="text-lime">THRIFTS</span></span>
+          <span class="font-mono text-[10px] uppercase tracking-widest2 text-lime border border-lime rounded-full px-2 py-1">Paid</span>
+        </div>
+        <p class="font-mono text-[10px] uppercase tracking-widest2 text-muted">Order Ticket</p>
+        <p id="ticketId" class="font-display text-4xl text-lime tracking-wide mt-1">#21-001</p>
+      </div>
+
+      <div class="relative">
+        <div class="notch -left-[11px]"></div>
+        <div class="notch -right-[11px]"></div>
+        <div class="ticket-tear mx-6"></div>
+      </div>
+
+      <div class="px-6 py-4 space-y-3">
+        <div id="ticketItems" class="space-y-1.5 font-mono text-xs"></div>
+        <div class="flex justify-between font-mono text-xs text-muted pt-2 border-t border-dashed border-edge">
+          <span>Delivery fee</span><span id="ticketDeliveryFee">KSh 50</span>
+        </div>
+        <div class="flex justify-between font-mono text-sm font-bold">
+          <span>Total Paid</span><span id="ticketTotal" class="text-lime">KSh 0</span>
+        </div>
+      </div>
+
+      <div class="relative">
+        <div class="notch -left-[11px]"></div>
+        <div class="notch -right-[11px]"></div>
+        <div class="ticket-tear mx-6"></div>
+      </div>
+
+      <div class="px-6 py-4 space-y-1.5 font-mono text-[11px] text-muted">
+        <p>Drop point: <span id="ticketLocation" class="text-ink"></span></p>
+        <p>Recipient: <span id="ticketName" class="text-ink"></span></p>
+        <p>Time: <span id="ticketTimestamp" class="text-ink"></span></p>
+      </div>
+
+      <div class="barcode text-ink/80 h-10 mx-6 mb-6 rounded-sm"></div>
+    </div>
+
+    <div class="flex gap-3 mt-4">
+      <button id="saveTicketBtn" class="flex-1 py-3 rounded-full border border-edge hover:border-lime font-mono text-[11px] uppercase tracking-widest2 font-bold transition">Save Ticket</button>
+      <button id="printTicketBtn" class="flex-1 py-3 rounded-full bg-lime text-black font-mono text-[11px] uppercase tracking-widest2 font-bold hover:brightness-95 transition">Print Ticket</button>
+    </div>
+    <button id="closeTicketBtn" class="w-full mt-3 py-2 font-mono text-[11px] uppercase tracking-widest2 text-muted hover:text-ink transition">Back to shopping</button>
+  </div>
+</div>
+
+<!-- ============ ORDER STATUS MODAL ============ -->
+<div id="orderStatusOverlay" class="hidden fixed inset-0 z-50 grid place-items-center p-4">
+  <div class="absolute inset-0 bg-black/80" data-close="orderStatus"></div>
+  <div class="relative bg-surface border border-edge rounded-2xl w-full max-w-sm rise-in">
+    <div class="flex items-center justify-between px-6 h-16 border-b border-edge">
+      <h3 class="font-display text-2xl uppercase tracking-wide">Order Status</h3>
+      <button data-close="orderStatus" aria-label="Close" class="w-9 h-9 rounded-full border border-edge grid place-items-center hover:border-lime">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="px-6 py-6">
+      <label for="lookupTicketId" class="block text-xs font-mono uppercase tracking-widest2 text-muted mb-2">Ticket ID</label>
+      <div class="flex gap-2">
+        <input id="lookupTicketId" type="text" placeholder="#21-001" class="flex-1 bg-bg border border-edge rounded-lg px-4 py-3 text-sm font-mono focus:border-lime outline-none placeholder:text-muted/50">
+        <button id="lookupBtn" class="px-5 rounded-lg bg-lime text-black font-mono text-xs uppercase tracking-widest2 font-bold">Find</button>
+      </div>
+      <div id="lookupResult" class="mt-5 font-mono text-xs text-muted"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- Data ---------- */
+  const BUSINESS_NAME = "Tony Thrifts";
+  const DELIVERY_FEE = 50;
+  const LOCATIONS = ["Gate A","Gate C","High Point","Juja Square","Hall 6","Gachororo","Caltex","Other"];
+
+  const PRODUCTS = [
+    { id:1, name:"Static Oversized Crewneck", category:"Sweatshirts", grade:"Grade A Import", price:1200, sizes:["M","L","XL"], icon:"🧥", isNew:true },
+    { id:2, name:"Vintage Champion Hoodie", category:"Sweatshirts", grade:"Grade A Import", price:1800, sizes:["S","M","L"], icon:"🧥", isNew:false },
+    { id:3, name:"Nike Tech Fleece Joggers", category:"Sweatpants", grade:"Grade A Import", price:1500, sizes:["M","L","XL"], icon:"👖", isNew:true },
+    { id:4, name:"Cargo Thrift Sweatpants", category:"Sweatpants", grade:"Grade B Import", price:900, sizes:["S","M","L"], icon:"👖", isNew:false },
+    { id:5, name:"Air Force 1 '07", category:"Shoes", grade:"Grade A Import", price:3500, sizes:["40","41","42","43"], icon:"👟", isNew:true },
+    { id:6, name:"Air Max 90", category:"Shoes", grade:"Grade A Import", price:4200, sizes:["41","42","43","44"], icon:"👟", isNew:false },
+    { id:7, name:"Retro Jordan 1 Mid", category:"Shoes", grade:"Grade B Import", price:3800, sizes:["40","41","42"], icon:"👟", isNew:false },
+    { id:8, name:"Essentials Fleece Hoodie", category:"Sweatshirts", grade:"Grade A Import", price:2000, sizes:["M","L","XL"], icon:"🧥", isNew:true },
+    { id:9, name:"Baggy Cargo Sweatpants", category:"Sweatpants", grade:"Grade A Import", price:1300, sizes:["S","M","L","XL"], icon:"👖", isNew:false },
+    { id:10, name:"Converse Chuck 70", category:"Shoes", grade:"Grade B Import", price:2200, sizes:["39","40","41","42"], icon:"👟", isNew:false },
+    { id:11, name:"Polo Quarter-Zip Sweatshirt", category:"Sweatshirts", grade:"Grade A Import", price:1600, sizes:["M","L"], icon:"🧥", isNew:false },
+    { id:12, name:"Adidas Track Pants", category:"Sweatpants", grade:"Grade A Import", price:1400, sizes:["S","M","L","XL"], icon:"👖", isNew:true },
+  ];
+
+  /* ---------- State ---------- */
+  let cart = [];          // {productId, name, price, size, qty, category}
+  let currentFilter = "all";
+  let selectedLocation = null;
+
+  /* ---------- Helpers ---------- */
+  const $ = (sel, ctx=document) => ctx.querySelector(sel);
+  const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+  const ksh = (n) => "KSh " + n.toLocaleString("en-KE");
+
+  /* ---------- Product Grid ---------- */
+  function productMatchesFilter(p, f){
+    if (f === "all") return true;
+    if (f === "New") return p.isNew;
+    return p.category === f;
+  }
+
+  function renderProducts(){
+    const grid = $("#productGrid");
+    const list = PRODUCTS.filter(p => productMatchesFilter(p, currentFilter));
+    grid.innerHTML = list.map(p => `
+      <article class="group rounded-2xl border border-edge bg-surface overflow-hidden flex flex-col hover:border-lime/60 transition-colors">
+        <div class="relative aspect-square bg-gradient-to-br from-surface2 to-black grid place-items-center overflow-hidden">
+          <span class="text-5xl sm:text-6xl opacity-90 group-hover:scale-110 transition-transform duration-300">${p.icon}</span>
+          ${p.isNew ? `<span class="absolute top-2 left-2 font-mono text-[9px] uppercase tracking-widest2 bg-lime text-black rounded-full px-2 py-1 font-bold">New</span>` : ``}
+          <span class="absolute bottom-2 right-2 hang-tag pl-3 font-mono text-[9px] uppercase tracking-widest2 text-cyan bg-black/60 backdrop-blur rounded-full pr-2 py-1 border border-cyan/30">${p.grade}</span>
+        </div>
+        <div class="p-3.5 sm:p-4 flex flex-col flex-1">
+          <h3 class="font-sans font-semibold text-sm leading-snug mb-1.5">${p.name}</h3>
+          <p class="font-mono text-[10px] uppercase tracking-widest2 text-muted mb-3">${p.category}</p>
+
+          <div class="mb-3">
+            <label class="sr-only" for="size-${p.id}">Size</label>
+            <select id="size-${p.id}" class="w-full bg-bg border border-edge rounded-lg px-2.5 py-2 text-xs font-mono focus:border-lime outline-none">
+              ${p.sizes.map(s => `<option value="${s}">Size ${s}</option>`).join("")}
+            </select>
+          </div>
+
+          <div class="mt-auto flex items-center justify-between gap-2">
+            <span class="font-mono text-sm font-bold text-lime">${ksh(p.price)}</span>
+            <button data-add="${p.id}" class="px-3.5 py-2 rounded-full bg-ink text-black font-mono text-[10px] uppercase tracking-widest2 font-bold hover:bg-lime transition">Add to Cart</button>
+          </div>
+        </div>
+      </article>
+    `).join("");
+  }
+
+  $("#filterBar").addEventListener("click", (e) => {
+    const btn = e.target.closest(".filter-btn");
+    if (!btn) return;
+    currentFilter = btn.dataset.filter;
+    $$(".filter-btn").forEach(b => {
+      b.classList.remove("border-lime","bg-lime","text-black","font-bold");
+      b.classList.add("border-edge","text-muted");
+    });
+    btn.classList.add("border-lime","bg-lime","text-black","font-bold");
+    btn.classList.remove("border-edge","text-muted");
+    renderProducts();
+  });
+
+  function setFilterByScope(scope){
+    let target = "all";
+    if (scope === "apparel") target = "Sweatshirts";
+    if (scope === "shoes") target = "Shoes";
+    const btn = $$(".filter-btn").find(b => b.dataset.filter === target) || $$(".filter-btn")[0];
+    btn.click();
+  }
+  $$(".nav-link[data-scope]").forEach(link => {
+    link.addEventListener("click", () => setFilterByScope(link.dataset.scope));
+  });
+
+  $("#productGrid").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-add]");
+    if (!btn) return;
+    const id = Number(btn.dataset.add);
+    const product = PRODUCTS.find(p => p.id === id);
+    const size = $("#size-" + id).value;
+    addToCart(product, size);
+    btn.textContent = "Added ✓";
+    btn.classList.add("bg-lime");
+    setTimeout(() => { btn.textContent = "Add to Cart"; btn.classList.remove("bg-lime"); }, 900);
+  });
+
+  /* ---------- Cart ---------- */
+  function addToCart(product, size){
+    const existing = cart.find(i => i.productId === product.id && i.size === size);
+    if (existing) { existing.qty += 1; }
+    else { cart.push({ productId: product.id, name: product.name, price: product.price, size, qty: 1, category: product.category }); }
+    renderCart();
+    openOverlay("cartOverlay", "cartPanel");
+  }
+
+  function changeQty(index, delta){
+    cart[index].qty += delta;
+    if (cart[index].qty <= 0) cart.splice(index, 1);
+    renderCart();
+  }
+
+  function cartSubtotal(){ return cart.reduce((sum, i) => sum + i.price * i.qty, 0); }
+
+  function renderCart(){
+    const count = cart.reduce((n,i)=>n+i.qty,0);
+    $("#cartCount").textContent = count;
+
+    const wrap = $("#cartItems");
+    if (cart.length === 0){
+      wrap.innerHTML = `<p class="text-muted text-sm font-mono py-10 text-center">Your cart is empty.<br>Go grab some drip.</p>`;
+    } else {
+      wrap.innerHTML = cart.map((item, idx) => `
+        <div class="flex gap-3 border border-edge rounded-xl p-3">
+          <div class="w-16 h-16 rounded-lg bg-surface2 grid place-items-center text-2xl shrink-0">${(PRODUCTS.find(p=>p.id===item.productId)||{}).icon || "🧵"}</div>
+          <div class="flex-1 min-w-0">
+            <p class="text-sm font-semibold truncate">${item.name}</p>
+            <p class="font-mono text-[10px] uppercase tracking-widest2 text-muted mt-0.5">Size ${item.size}</p>
+            <div class="flex items-center justify-between mt-2">
+              <div class="flex items-center gap-2 border border-edge rounded-full px-1">
+                <button data-qty="${idx}" data-delta="-1" class="w-6 h-6 rounded-full grid place-items-center hover:text-lime">−</button>
+                <span class="font-mono text-xs w-4 text-center">${item.qty}</span>
+                <button data-qty="${idx}" data-delta="1" class="w-6 h-6 rounded-full grid place-items-center hover:text-lime">+</button>
+              </div>
+              <span class="font-mono text-xs font-bold text-lime">${ksh(item.price * item.qty)}</span>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    const sub = cartSubtotal();
+    const total = cart.length ? sub + DELIVERY_FEE : 0;
+    $("#cartSubtotal").textContent = ksh(sub);
+    $("#cartTotal").textContent = ksh(total);
+    $("#checkoutOpenBtn").disabled = cart.length === 0;
+  }
+
+  $("#cartItems").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-qty]");
+    if (!btn) return;
+    changeQty(Number(btn.dataset.qty), Number(btn.dataset.delta));
+  });
+
+  /* ---------- Overlays ---------- */
+  function openOverlay(overlayId, panelId){
+    const overlay = $("#" + overlayId);
+    overlay.classList.remove("hidden");
+    requestAnimationFrame(() => { if (panelId) $("#" + panelId).classList.remove("translate-x-full"); });
+    document.body.style.overflow = "hidden";
+  }
+  function closeOverlay(overlayId, panelId){
+    if (panelId) $("#" + panelId).classList.add("translate-x-full");
+    const overlay = $("#" + overlayId);
+    setTimeout(() => { overlay.classList.add("hidden"); document.body.style.overflow = ""; }, panelId ? 250 : 0);
+  }
+
+  $("#cartBtn").addEventListener("click", () => openOverlay("cartOverlay","cartPanel"));
+  document.addEventListener("click", (e) => {
+    const closer = e.target.closest("[data-close]");
+    if (!closer) return;
+    const key = closer.dataset.close;
+    if (key === "cart") closeOverlay("cartOverlay","cartPanel");
+    if (key === "checkout") closeOverlay("checkoutOverlay");
+    if (key === "orderStatus") closeOverlay("orderStatusOverlay");
+  });
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    closeOverlay("cartOverlay","cartPanel");
+    closeOverlay("checkoutOverlay");
+    closeOverlay("orderStatusOverlay");
+  });
+
+  /* ---------- Mobile menu ---------- */
+  $("#mobileMenuBtn").addEventListener("click", () => $("#mobileMenu").classList.toggle("hidden"));
+  $$("#mobileMenu .nav-link").forEach(l => l.addEventListener("click", () => $("#mobileMenu").classList.add("hidden")));
+
+  /* ---------- Checkout ---------- */
+  function renderLocationOptions(){
+    $("#locationOptions").innerHTML = LOCATIONS.map((loc, i) => `
+      <div>
+        <input type="radio" name="location" id="loc-${i}" value="${loc}" class="sr-only loc-radio">
+        <label for="loc-${i}" class="block text-center border border-edge rounded-lg px-2 py-2.5 text-xs font-mono cursor-pointer text-muted transition">${loc}</label>
+      </div>
+    `).join("");
+  }
+  renderLocationOptions();
+
+  $("#checkoutOpenBtn").addEventListener("click", () => {
+    if (cart.length === 0) return;
+    const sub = cartSubtotal();
+    $("#checkoutSummary").innerHTML = cart.map(i => `<div class="flex justify-between"><span>${i.qty}× ${i.name} (${i.size})</span><span>${ksh(i.price*i.qty)}</span></div>`).join("")
+      + `<div class="flex justify-between pt-2 mt-1 border-t border-edge text-ink font-bold"><span>Total incl. delivery</span><span>${ksh(sub + DELIVERY_FEE)}</span></div>`;
+    closeOverlay("cartOverlay","cartPanel");
+    openOverlay("checkoutOverlay");
+  });
+
+  $("#checkoutForm").addEventListener("change", (e) => {
+    if (e.target.name === "location") selectedLocation = e.target.value;
+  });
+
+  function validatePhone(v){ return /^(07|01)\d{8}$/.test(v.trim()); }
+
+  $("#checkoutForm").addEventListener("submit", (e) => {
+    e.preventDefault();
+    const name = $("#fullName").value.trim();
+    const phone = $("#phone").value.trim();
+
+    let valid = true;
+    $$("[data-error]").forEach(el => el.classList.add("hidden"));
+
+    if (!name){ $('[data-error="fullName"]').classList.remove("hidden"); valid = false; }
+    if (!validatePhone(phone)){ $('[data-error="phone"]').classList.remove("hidden"); valid = false; }
+    if (!selectedLocation){ $('[data-error="location"]').classList.remove("hidden"); valid = false; }
+    if (!valid) return;
+
+    const total = cartSubtotal() + DELIVERY_FEE;
+    closeOverlay("checkoutOverlay");
+    launchSTK(total, { name, phone, location: selectedLocation });
+  });
+
+  /* ---------- M-Pesa STK Simulation ---------- */
+  function launchSTK(amount, buyer){
+    $("#stkAmount").textContent = ksh(amount);
+    $("#stkBusiness").textContent = BUSINESS_NAME;
+    $("#stkPinStage").classList.remove("hidden");
+    $("#stkSuccessStage").classList.add("hidden");
+    $$('#stkPinDots [data-dot]').forEach(d => d.classList.remove("pin-fill","bg-lime","border-lime"));
+    openOverlay("stkOverlay");
+    $("#stkConfirmBtn").onclick = () => simulatePin(amount, buyer);
+    $("#stkCancelBtn").onclick = () => closeOverlay("stkOverlay");
+  }
+
+  function simulatePin(amount, buyer){
+    const dots = $$('#stkPinDots [data-dot]');
+    $("#stkConfirmBtn").disabled = true;
+    dots.forEach((dot, i) => {
+      setTimeout(() => { dot.classList.add("pin-fill","bg-lime","border-lime"); }, i * 260);
+    });
+    setTimeout(() => {
+      $("#stkPinStage").classList.add("hidden");
+      $("#stkSuccessStage").classList.remove("hidden");
+    }, dots.length * 260 + 200);
+    setTimeout(() => {
+      closeOverlay("stkOverlay");
+      $("#stkConfirmBtn").disabled = false;
+      completeOrder(amount, buyer);
+    }, dots.length * 260 + 1400);
+  }
+
+  /* ---------- Ticket Sequence & Orders ---------- */
+  function nextTicketId(){
+    let seq = Number(localStorage.getItem("tt_ticket_seq") || "0");
+    seq = seq >= 999 ? 1 : seq + 1;
+    localStorage.setItem("tt_ticket_seq", String(seq));
+    return "#21-" + String(seq).padStart(3, "0");
+  }
+
+  function saveOrder(order){
+    const orders = JSON.parse(localStorage.getItem("tt_orders") || "[]");
+    orders.push(order);
+    localStorage.setItem("tt_orders", JSON.stringify(orders));
+  }
+
+  function completeOrder(total, buyer){
+    const ticketId = nextTicketId();
+    const timestamp = new Date().toLocaleString("en-KE", { dateStyle:"medium", timeStyle:"short" });
+    const order = {
+      id: ticketId,
+      name: buyer.name,
+      phone: buyer.phone,
+      location: buyer.location,
+      items: cart.map(i => ({ name:i.name, size:i.size, qty:i.qty, price:i.price })),
+      subtotal: cartSubtotal(),
+      deliveryFee: DELIVERY_FEE,
+      total,
+      timestamp,
+      status: "Confirmed — preparing for delivery"
+    };
+    saveOrder(order);
+    renderTicket(order);
+
+    cart = [];
+    renderCart();
+    $("#checkoutForm").reset();
+    selectedLocation = null;
+    $$(".loc-radio").forEach(r => r.checked = false);
+
+    openOverlay("ticketOverlay");
+  }
+
+  function renderTicket(order){
+    $("#ticketId").textContent = order.id;
+    $("#ticketItems").innerHTML = order.items.map(i => `
+      <div class="flex justify-between">
+        <span>${i.qty}× ${i.name} (${i.size})</span>
+        <span>${ksh(i.price * i.qty)}</span>
+      </div>
+    `).join("");
+    $("#ticketDeliveryFee").textContent = ksh(order.deliveryFee);
+    $("#ticketTotal").textContent = ksh(order.total);
+    $("#ticketLocation").textContent = order.location;
+    $("#ticketName").textContent = order.name;
+    $("#ticketTimestamp").textContent = order.timestamp;
+  }
+
+  $("#closeTicketBtn").addEventListener("click", () => closeOverlay("ticketOverlay"));
+
+  $("#printTicketBtn").addEventListener("click", () => window.print());
+
+  $("#saveTicketBtn").addEventListener("click", () => {
+    const node = $("#ticketPrintArea");
+    if (typeof html2canvas === "undefined"){ window.print(); return; }
+    html2canvas(node, { backgroundColor: "#131315", scale: 2 }).then(canvas => {
+      const link = document.createElement("a");
+      link.download = ($("#ticketId").textContent.replace("#","tonythrifts-") || "ticket") + ".png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    });
+  });
+
+  /* ---------- Order Status Lookup ---------- */
+  function openOrderStatus(){ openOverlay("orderStatusOverlay"); }
+  $("#orderStatusNavBtn").addEventListener("click", openOrderStatus);
+  $("#orderStatusNavBtnMobile").addEventListener("click", () => { $("#mobileMenu").classList.add("hidden"); openOrderStatus(); });
+
+  $("#lookupBtn").addEventListener("click", () => {
+    const raw = $("#lookupTicketId").value.trim();
+    const id = raw.startsWith("#") ? raw : "#" + raw;
+    const orders = JSON.parse(localStorage.getItem("tt_orders") || "[]");
+    const found = orders.find(o => o.id.toLowerCase() === id.toLowerCase());
+    const box = $("#lookupResult");
+    if (!found){
+      box.innerHTML = `<p class="text-red-400">No order found for ${id}.</p>`;
+      return;
+    }
+    box.innerHTML = `
+      <div class="border border-edge rounded-xl p-4 space-y-1.5">
+        <p class="text-lime font-bold">${found.id}</p>
+        <p>Status: <span class="text-ink">${found.status}</span></p>
+        <p>Drop point: <span class="text-ink">${found.location}</span></p>
+        <p>Total: <span class="text-ink">${ksh(found.total)}</span></p>
+        <p>Placed: <span class="text-ink">${found.timestamp}</span></p>
+      </div>
+    `;
+  });
+
+  /* ---------- Init ---------- */
+  renderProducts();
+  renderCart();
+})();
+</script>
+</body>
+</html>
